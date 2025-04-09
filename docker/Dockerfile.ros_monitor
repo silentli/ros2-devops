@@ -1,0 +1,13 @@
+# docker/Dockerfile.ros_exporter
+FROM ros:humble
+
+# Install Prometheus client and ROS python packages
+RUN apt update && apt install -y python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install prometheus_client
+
+# Entry point to launch the node
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

@@ -1,0 +1,26 @@
+services:
+  ros_node:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.ros_node
+    volumes:
+      - ./ros2_ws:/ros2_ws
+    depends_on:
+      - ros_exporter
+
+  ros_exporter:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.ros_monitor
+    volumes:
+      - ./monitoring:/monitoring
+    command: python3 monitoring/ros_exporter.py
+    ports:
+      - "8000:8000"
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
